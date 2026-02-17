@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/BlogPost.astro';
+---
+
+<Layout
+	title="Ai Chatbot"
+	description="Ai Chatbot for the Reinvention-1 project"
+	pubDate={new Date(' ')}
+	heroImage="/reinvention-1_logo.png"
+>
+	<p>
+	<iframe
+  src="https://llm-chat-app-template.nfr-namer-us-accenture-us.workers.dev/"
+  style="width:50%; height:700px; border:0; border-radius:12px;"
+  loading="lazy"
+  title="Reinvention-1 AI Chat">
+</iframe>	</p>
+
+	
+</Layout>
