@@ -1,0 +1,28 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+	<img src="/reinvention-1_logo.png">			
+			<p><b>Reinvention‑1</b> is a live mission, built to learn!</br>
+<p>
+Explore a curated public view into what’s happening in orbit</br>
+—updated as the mission evolves.</p>
+<p>
+<b>Coming soon:</b></br> Experiment status, satellite position, and the latest</br>
++ next check-ins with ground stations!</p>
+</td>	
+		</main>
+<Footer />
+	</body>
+</html>
