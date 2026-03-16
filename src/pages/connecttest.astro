@@ -275,8 +275,16 @@
 </div>
 <div style="border: 2px solid #333; class="content-main">
 <!-- SSSSSSSSSSSSSection One -->
-<div class="box-container">
-  <div class="box">Box One</div>
+.box-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.box {
+  padding: 1rem;
+  border: 1px solid #ccc;
+}
   <section class="section section-one">
     <h2>Satellite Connect</h2>
     <p>GS1</p>
@@ -284,9 +292,6 @@
 
   <!-- SSSSSSSSSSSSSectionTwo -->
   <section class="section section-two">
-<div class="box-container">
-  <div class="box">Box Two</div>
-</div>
     <h2>Ground Connectivity</h2>
     <p>Connect to GS2</p>
     <p>Connect to GS3</p>
