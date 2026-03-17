@@ -14,11 +14,16 @@
   --text:#e5e7eb;
   --muted:#9ca3af;
   --line:#1f2937;
+
   --blue:#3b82f6;
   --green:#22c55e;
   --red:#b91c1c;
+  --amber:#f59e0b;
+
   --inactive:#4b5563;
   --radius:12px;
+
+  --shadow:0 10px 25px rgba(0,0,0,.45);
 }
 
 html[data-theme="light"]{
@@ -28,10 +33,14 @@ html[data-theme="light"]{
   --text:#111827;
   --muted:#6b7280;
   --line:#e5e7eb;
+
   --blue:#2563eb;
   --green:#16a34a;
   --red:#dc2626;
+  --amber:#d97706;
+
   --inactive:#9ca3af;
+  --shadow:0 10px 18px rgba(0,0,0,.12);
 }
 
 *{box-sizing:border-box}
@@ -40,14 +49,18 @@ body{
   font-family:"Segoe UI", Arial, sans-serif;
   background:var(--bg);
   color:var(--text);
+  padding-bottom:56px; /* space for bottom revision bar */
 }
 
-/* ===================== PRIMARY NAV ===================== */
+/* ===================== PRIMARY NAV (RED BAR) ===================== */
 .primaryNav{
   background:var(--red);
   display:flex;
   gap:6px;
   padding:10px 16px;
+  position:sticky;
+  top:0;
+  z-index:20;
 }
 .primaryTab{
   color:#fff;
@@ -55,17 +68,23 @@ body{
   padding:8px 14px;
   border-radius:8px;
   cursor:pointer;
-  opacity:.85;
+  opacity:.88;
+  user-select:none;
 }
 .primaryTab.active{
   background:rgba(255,255,255,.25);
   opacity:1;
 }
+.primaryTab.disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  text-decoration:line-through;
+}
 
-/* ===================== PAGE ===================== */
+/* ===================== PAGE LAYOUT ===================== */
 .page{display:none;padding:24px}
 .page.active{display:block}
-.wrap{max-width:1100px;margin:auto}
+.wrap{max-width:1150px;margin:auto}
 
 /* ===================== HEADER ===================== */
 .header{
@@ -77,8 +96,9 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  box-shadow:var(--shadow);
 }
-.meta{display:flex;gap:10px;flex-wrap:wrap}
+.meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .pill{
   padding:4px 10px;
   border-radius:999px;
@@ -107,50 +127,69 @@ body{
 }
 .switch::after{
   content:"";
-  width:18px;
-  height:18px;
+  width:18px;height:18px;
   background:var(--card);
   border-radius:50%;
   position:absolute;
-  top:2px;
-  left:2px;
+  top:2px; left:2px;
   transition:.25s;
 }
-.themeToggle input:checked + .switch::after{
-  left:22px;
-}
+.themeToggle input:checked + .switch::after{ left:22px; }
 
-/* ===================== SECONDARY NAV ===================== */
+/* ===================== SECONDARY NAV (GS) ===================== */
 .secondaryNav{
   display:flex;
   border-bottom:1px solid var(--line);
   margin-bottom:16px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
 }
 .gsTab{
   flex:1;
   text-align:center;
   padding:12px;
-  font-weight:800;
+  font-weight:900;
   cursor:pointer;
   color:var(--muted);
+  user-select:none;
+  border-right:1px solid var(--line);
 }
+.gsTab:last-child{border-right:none}
 .gsTab.active{
   color:var(--text);
   box-shadow:inset 0 -3px 0 var(--blue);
 }
 
 /* ===================== CONTENT ===================== */
+.row{
+  display:grid;
+  grid-template-columns: 2fr 1fr;
+  gap:16px;
+}
+@media (max-width: 980px){
+  .row{grid-template-columns:1fr}
+}
+
 .card{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:var(--radius);
   padding:18px;
+  box-shadow:var(--shadow);
 }
+
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:16px;
 }
+@media (max-width: 820px){
+  .grid{grid-template-columns:1fr}
+}
+
 .section{
   background:var(--card-2);
   border:1px solid var(--line);
@@ -162,46 +201,214 @@ body{
   font-size:12px;
   text-transform:uppercase;
   color:var(--muted);
+  letter-spacing:.3px;
 }
 .kv{
   display:flex;
   justify-content:space-between;
-  padding:6px 0;
+  padding:7px 0;
   border-bottom:1px dashed var(--line);
+  font-size:13px;
 }
 .kv:last-child{border-bottom:none}
 .k{color:var(--muted)}
-.v{font-weight:800}
+.v{font-weight:900}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:3px 10px;
+  border-radius:999px;
+  font-size:12px;
+  border:1px solid var(--line);
+  background:var(--card);
+}
+.dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--inactive);
+}
+.dot.ok{background:var(--green)}
+.dot.warn{background:var(--amber)}
+.dot.off{background:var(--inactive)}
 
 .status-ok{color:var(--green)}
 .status-off{color:var(--inactive)}
+.status-warn{color:var(--amber)}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.btn{
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  font-weight:900;
+  cursor:pointer;
+  user-select:none;
+}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.danger{background:var(--red);border-color:var(--red);color:#fff}
+.btn.ghost{background:transparent}
+.btn.disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+.smallNote{
+  margin-top:10px;
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.35;
+}
+
+/* ===================== RING PANEL ===================== */
+.ringTabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.ringTab{
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--card);
+  cursor:pointer;
+  font-weight:900;
+  user-select:none;
+  color:var(--muted);
+}
+.ringTab.active{
+  color:var(--text);
+  border-color:var(--blue);
+  box-shadow: inset 0 0 0 2px rgba(59,130,246,.25);
+}
+
+/* ===================== TABLE ===================== */
+table{width:100%;border-collapse:collapse}
+th,td{
+  padding:10px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  font-size:13px;
+}
+th{
+  color:var(--muted);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.2px;
+}
+
+/* ===================== LOG ===================== */
+.logBox{
+  height:520px;
+  overflow:auto;
+  background:var(--card-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size:12px;
+  white-space:pre-wrap;
+  line-height:1.45;
+}
+.logLineMuted{color:var(--muted)}
+.logTools{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+/* ===================== TOAST ===================== */
+.toast{
+  position:fixed;
+  right:14px;
+  bottom:70px;
+  background:rgba(10,14,20,.95);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.08);
+  padding:12px 14px;
+  border-radius:12px;
+  box-shadow:0 12px 28px rgba(0,0,0,.35);
+  max-width:420px;
+  opacity:0;
+  transform:translateY(10px);
+  transition:.18s ease;
+  pointer-events:none;
+  z-index:50;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast small{display:block;opacity:.85;margin-top:4px}
+
+/* ===================== BOTTOM REVISION BAR ===================== */
+.revBar{
+  position:fixed;
+  left:0; right:0; bottom:0;
+  height:56px;
+  background:var(--card);
+  border-top:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  z-index:30;
+}
+.revLeft, .revRight{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.revItem{
+  font-size:12px;
+  color:var(--muted);
+  border:1px solid var(--line);
+  background:var(--card-2);
+  padding:6px 10px;
+  border-radius:999px;
+}
+.revLink{
+  font-size:12px;
+  color:var(--blue);
+  font-weight:900;
+  cursor:pointer;
+  text-decoration:underline;
+  user-select:none;
+}
 </style>
 </head>
 
 <body>
 
-<!-- PRIMARY NAV -->
+<!-- ========================= PRIMARY NAV (RED BAR) ========================= -->
 <div class="primaryNav">
-  <div class="primaryTab active" onclick="switchPage('home',this)">Home</div>
-  <div class="primaryTab" onclick="switchPage('global',this)">Global View</div>
-  <div class="primaryTab" onclick="switchPage('table',this)">Table View</div>
-  <div class="primaryTab" onclick="switchPage('users',this)">Manage WFC Users</div>
-  <div class="primaryTab" onclick="switchPage('logout',this)">Logout</div>
+  <div id="nav-home" class="primaryTab active" onclick="goPage('home')">Home</div>
+  <div id="nav-global" class="primaryTab" onclick="goPage('global')">Global View</div>
+  <div id="nav-table" class="primaryTab" onclick="goPage('table')">Table View</div>
+  <div id="nav-users" class="primaryTab" onclick="goPage('users')">Manage WFC Users</div>
+  <div id="nav-logout" class="primaryTab" onclick="goPage('logout')">Logout</div>
 </div>
 
-<!-- HOME -->
-<div id="home" class="page active">
+<!-- ========================= PAGE: HOME ========================= -->
+<div id="page-home" class="page active">
   <div class="wrap">
 
+    <!-- USER CONTEXT HEADER -->
     <div class="header">
       <div class="meta">
-        <span class="pill">Logged in: name@wfc.xyz</span>
-        <span class="pill">Role: Dev</span>
-        <span class="pill">Team: Team_123</span>
+        <span class="pill" id="pill-user">Logged in: name@wfc.xyz</span>
+        <span class="pill">Team: <span id="pill-team">Team_123</span></span>
+        <span class="pill">Role:
+          <select id="roleSelect" style="margin-left:6px;border-radius:10px;padding:4px 8px;border:1px solid var(--line);background:var(--card);color:var(--text);">
+            <option>Viewer</option>
+            <option selected>Dev</option>
+            <option>Admin</option>
+          </select>
+        </span>
       </div>
 
       <!-- THEME TOGGLE -->
-      <label class="themeToggle">
+      <label class="themeToggle" title="Toggle Light/Dark">
         🌙
         <input id="themeSwitch" type="checkbox">
         <span class="switch"></span>
@@ -209,86 +416,687 @@ body{
       </label>
     </div>
 
-    <div class="secondaryNav">
-      <div class="gsTab active" onclick="selectGS('GS1',this)">GS1</div>
-      <div class="gsTab" onclick="selectGS('GS2',this)">GS2</div>
-      <div class="gsTab" onclick="selectGS('GS3',this)">GS3</div>
-      <div class="gsTab" onclick="selectGS('GS4',this)">GS4</div>
+    <!-- SECONDARY NAVIGATION (GS) -->
+    <div class="secondaryNav" title="Secondary Navigation (GS1–GS4)">
+      <div class="gsTab active" onclick="selectGS('GS1', this)">GS1</div>
+      <div class="gsTab" onclick="selectGS('GS2', this)">GS2</div>
+      <div class="gsTab" onclick="selectGS('GS3', this)">GS3</div>
+      <div class="gsTab" onclick="selectGS('GS4', this)">GS4</div>
     </div>
 
-    <div class="card">
-      <div class="grid">
-        <div class="section">
-          <h4>Satellite Connectivity</h4>
-          <div class="kv"><span class="k">Active GS</span><span id="activeGS" class="v">GS1</span></div>
-          <div class="kv"><span class="k">Satellite Visible</span><span id="satVisible" class="v status-ok">Yes</span></div>
+    <div class="row">
+
+      <!-- LEFT: MAIN HOME CONTENT -->
+      <div class="card">
+
+        <!-- SECTION: STATUS PANELS -->
+        <div class="grid">
+
+          <!-- SATELLITE CONNECTIVITY -->
+          <div class="section">
+            <h4>Satellite Connectivity</h4>
+            <div class="kv"><span class="k">Active GS Context</span><span id="activeGS" class="v">GS1</span></div>
+            <div class="kv">
+              <span class="k">Satellite Visible</span>
+              <span class="v">
+                <span class="badge"><span id="satDot" class="dot ok"></span><span id="satVisible">Yes</span></span>
+              </span>
+            </div>
+            <div class="kv"><span class="k">Visible For</span><span id="visibleFor" class="v">12m</span></div>
+
+            <div class="actions">
+              <button class="btn ghost" onclick="toggleSatellite()">Toggle Visibility</button>
+            </div>
+
+            <div class="smallNote">
+              Visibility gates certain actions in this prototype (e.g., “Prepare” / “Distribute”). 
+            </div>
+          </div>
+
+          <!-- GROUND CONNECTIVITY -->
+          <div class="section">
+            <h4>Ground Station Connectivity (GS1–GS4)</h4>
+            <div class="kv"><span class="k">GS1</span><span id="cGS1" class="v status-ok">Connected</span></div>
+            <div class="kv"><span class="k">GS2</span><span id="cGS2" class="v status-off">Not Connected</span></div>
+            <div class="kv"><span class="k">GS3</span><span id="cGS3" class="v status-off">Not Connected</span></div>
+            <div class="kv"><span class="k">GS4</span><span id="cGS4" class="v status-off">Not Connected</span></div>
+
+            <div class="actions">
+              <button class="btn primary" onclick="connectTo('GS1')">Connect GS1</button>
+              <button class="btn" onclick="connectTo('GS2')">Connect GS2</button>
+              <button class="btn" onclick="connectTo('GS3')">Connect GS3</button>
+              <button class="btn" onclick="connectTo('GS4')">Connect GS4</button>
+              <button class="btn danger" onclick="disconnectAll()">Disconnect All</button>
+            </div>
+
+            <div class="smallNote">
+              Buttons update the connectivity state for the active GS context.
+            </div>
+          </div>
+
         </div>
 
-        <div class="section">
-          <h4>Ground Station Connectivity</h4>
-          <div class="kv"><span class="k">GS1</span><span id="cGS1" class="v status-ok">Connected</span></div>
-          <div class="kv"><span class="k">GS2</span><span id="cGS2" class="v status-off">Not Connected</span></div>
-          <div class="kv"><span class="k">GS3</span><span id="cGS3" class="v status-off">Not Connected</span></div>
-          <div class="kv"><span class="k">GS4</span><span id="cGS4" class="v status-off">Not Connected</span></div>
+        <!-- SECTION: RING PROTOCOL -->
+        <div style="margin-top:16px" class="section">
+          <h4>RING Protocol Selection</h4>
+
+          <div class="ringTabs">
+            <div class="ringTab active" id="ring-RING0" onclick="selectRing('RING0')">RING0</div>
+            <div class="ringTab" id="ring-RINGQ" onclick="selectRing('RINGQ')">RINGQ</div>
+            <div class="ringTab" id="ring-RING3" onclick="selectRing('RING3')">RING3</div>
+          </div>
+
+          <div style="margin-top:12px" class="grid">
+            <div class="section" style="background:transparent">
+              <h4 style="margin-top:0">RING State (Active GS)</h4>
+              <div class="kv"><span class="k">Selected Protocol</span><span id="ringSelected" class="v">RING0</span></div>
+              <div class="kv">
+                <span class="k">Prepared</span>
+                <span class="v"><span class="badge"><span id="prepDot" class="dot off"></span><span id="ringPrepared">No</span></span></span>
+              </div>
+              <div class="kv">
+                <span class="k">Key Delivered</span>
+                <span class="v"><span class="badge"><span id="delivDot" class="dot off"></span><span id="ringDelivered">No</span></span></span>
+              </div>
+            </div>
+
+            <div class="section" style="background:transparent">
+              <h4 style="margin-top:0">RING Actions</h4>
+              <div class="actions">
+                <button class="btn primary" onclick="prepareRing()">Prepare</button>
+                <button class="btn" onclick="distributeKeys()">Distribute Keys</button>
+                <button class="btn" onclick="exchangeTransfer()">Exchange Secure Transfer</button>
+                <button class="btn danger" onclick="resetRing()">Reset</button>
+              </div>
+              <div class="smallNote">
+                This panel is meant to reflect the mockup’s protocol choice and key delivery statuses. 
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: ACTIVITY LOG -->
+      <div class="card">
+        <h3 style="margin:0 0 10px;font-size:14px;text-transform:uppercase;color:var(--muted);letter-spacing:.3px;">
+          Audit / Activity Log
+        </h3>
+        <div id="logBox" class="logBox"></div>
+        <div class="logTools">
+          <button class="btn" onclick="clearLog()">Clear Log</button>
+          <button class="btn" onclick="exportLog()">Export Log (Copy)</button>
+        </div>
+        <div class="smallNote">
+          Every click and every access denial is logged with timestamp.
         </div>
       </div>
-    </div>
 
+    </div><!-- /row -->
+
+  </div><!-- /wrap -->
+</div><!-- /home -->
+
+
+<!-- ========================= PAGE: GLOBAL VIEW ========================= -->
+<div id="page-global" class="page">
+  <div class="wrap">
+    <div class="card">
+      <h2 style="margin-top:0">Global View</h2>
+      <p style="color:var(--muted);line-height:1.5">
+        This page provides a fleet-wide perspective across all ground stations and the satellite’s current visibility and readiness.
+      </p>
+
+      <div class="grid">
+        <div class="section">
+          <h4>Fleet Summary</h4>
+          <div class="kv"><span class="k">Satellite Visible To</span><span id="globalVisibleTo" class="v">—</span></div>
+          <div class="kv"><span class="k">Active Protocol</span><span id="globalProtocol" class="v">RING0</span></div>
+          <div class="kv"><span class="k">Stations Connected (active context)</span><span id="globalConnCount" class="v">0</span></div>
+        </div>
+
+        <div class="section">
+          <h4>Notes</h4>
+          <p style="margin:0;color:var(--muted);line-height:1.5">
+            Use <b>Home</b> to operate at a specific GS context. Global View is intended to summarize and observe, not drive the workflow.
+          </p>
+        </div>
+      </div>
+
+      <div class="smallNote">Tip: Click <b>Home</b> in the red bar to return to GS operations.</div>
+    </div>
   </div>
 </div>
 
-<!-- OTHER PAGES -->
-<div id="global" class="page"><div class="wrap card"><h2>Global View</h2></div></div>
-<div id="table" class="page"><div class="wrap card"><h2>Table View</h2></div></div>
-<div id="users" class="page"><div class="wrap card"><h2>Manage WFC Users</h2></div></div>
-<div id="logout" class="page"><div class="wrap card"><h2>Logout</h2></div></div>
+
+<!-- ========================= PAGE: TABLE VIEW ========================= -->
+<div id="page-table" class="page">
+  <div class="wrap">
+    <div class="card">
+      <h2 style="margin-top:0">Table View</h2>
+      <p style="color:var(--muted);line-height:1.5">
+        A tabular view of GS connectivity and satellite visibility by context.
+      </p>
+      <div id="tableMount"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================= PAGE: MANAGE USERS ========================= -->
+<div id="page-users" class="page">
+  <div class="wrap">
+    <div class="card">
+      <h2 style="margin-top:0">Manage WFC Users</h2>
+      <p style="color:var(--muted);line-height:1.5">
+        Admin-only page. Use this for user provisioning, roles, and access control.
+      </p>
+
+      <div class="section">
+        <h4>User Directory (Demo)</h4>
+        <table>
+          <tr><th>User</th><th>Role</th><th>Status</th></tr>
+          <tr><td>name@wfc.xyz</td><td>Dev</td><td class="status-ok">Active</td></tr>
+          <tr><td>ops@wfc.xyz</td><td>Viewer</td><td class="status-ok">Active</td></tr>
+          <tr><td>admin@wfc.xyz</td><td>Admin</td><td class="status-ok">Active</td></tr>
+        </table>
+      </div>
+
+      <div class="smallNote">
+        In this prototype, access to this page is gated by role (Admin only).
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================= PAGE: LOGOUT ========================= -->
+<div id="page-logout" class="page">
+  <div class="wrap">
+    <div class="card">
+      <h2 style="margin-top:0">Logout</h2>
+      <p style="color:var(--muted);line-height:1.5">
+        You have exited the admin interface (demo screen).
+      </p>
+      <button class="btn primary" onclick="goPage('home')">Return to Home</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================= TOAST ========================= -->
+<div id="toast" class="toast">
+  <div id="toastTitle" style="font-weight:900">Notice</div>
+  <small id="toastMsg">—</small>
+</div>
+
+<!-- ========================= BOTTOM REVISION BAR ========================= -->
+<div class="revBar">
+  <div class="revLeft">
+    <span class="revItem"><b>Revision:</b> <span id="revNumber">1</span></span>
+    <span class="revItem"><b>Provided:</b> <span id="revProvided">—</span></span>
+    <span class="revItem"><b>Local Time:</b> <span id="liveClock">—</span></span>
+  </div>
+  <div class="revRight">
+    <span class="revLink" onclick="goPage('global')">Go to Global View</span>
+    <span class="revLink" onclick="goPage('home')">Go to Home</span>
+  </div>
+</div>
 
 <script>
-/* ===================== PAGE SWITCH ===================== */
-function switchPage(page,el){
-  document.querySelectorAll('.primaryTab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(page).classList.add('active');
-}
-
-/* ===================== GS STATE ===================== */
-const gsStates={
-  GS1:{visible:true,connections:{GS1:true,GS2:false,GS3:false,GS4:false}},
-  GS2:{visible:false,connections:{GS1:true,GS2:true,GS3:false,GS4:false}},
-  GS3:{visible:false,connections:{GS1:true,GS2:true,GS3:true,GS4:false}},
-  GS4:{visible:false,connections:{GS1:false,GS2:false,GS3:false,GS4:true}}
+/* =========================================================
+   STATE
+   ========================================================= */
+const state = {
+  user: {
+    email: "name@wfc.xyz",
+    team: "Team_123",
+    role: "Dev" // Viewer | Dev | Admin
+  },
+  activePage: "home",
+  activeGS: "GS1",
+  ring: {
+    activeProtocol: "RING0"
+  },
+  gs: {
+    GS1: {
+      satVisible: true,
+      visibleFor: "12m",
+      connections: { GS1:true, GS2:false, GS3:false, GS4:false },
+      ring: {
+        RING0: { prepared:false, delivered:false },
+        RINGQ: { prepared:false, delivered:false },
+        RING3: { prepared:false, delivered:false }
+      }
+    },
+    GS2: {
+      satVisible: false,
+      visibleFor: "—",
+      connections: { GS1:false, GS2:true, GS3:false, GS4:false },
+      ring: {
+        RING0: { prepared:false, delivered:false },
+        RINGQ: { prepared:false, delivered:false },
+        RING3: { prepared:false, delivered:false }
+      }
+    },
+    GS3: {
+      satVisible: false,
+      visibleFor: "—",
+      connections: { GS1:false, GS2:false, GS3:true, GS4:false },
+      ring: {
+        RING0: { prepared:false, delivered:false },
+        RINGQ: { prepared:false, delivered:false },
+        RING3: { prepared:false, delivered:false }
+      }
+    },
+    GS4: {
+      satVisible: false,
+      visibleFor: "—",
+      connections: { GS1:false, GS2:false, GS3:false, GS4:true },
+      ring: {
+        RING0: { prepared:false, delivered:false },
+        RINGQ: { prepared:false, delivered:false },
+        RING3: { prepared:false, delivered:false }
+      }
+    }
+  },
+  log: []
 };
 
-function selectGS(gs,el){
-  document.querySelectorAll('.gsTab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  const s=gsStates[gs];
-  document.getElementById('activeGS').textContent=gs;
-  document.getElementById('satVisible').textContent=s.visible?'Yes':'No';
-  document.getElementById('satVisible').className='v '+(s.visible?'status-ok':'status-off');
-  ['GS1','GS2','GS3','GS4'].forEach(g=>{
-    const e=document.getElementById('c'+g);
-    e.textContent=s.connections[g]?'Connected':'Not Connected';
-    e.className='v '+(s.connections[g]?'status-ok':'status-off');
+/* =========================================================
+   UTILITIES: TIME, LOG, TOAST
+   ========================================================= */
+function stamp(){
+  return new Date().toLocaleString();
+}
+
+function logEvent(action, detail="", level="INFO"){
+  const line = `[${stamp()}] ${level} — ${action}${detail ? ` | ${detail}` : ""}`;
+  state.log.unshift(line);
+  renderLog();
+}
+
+const toastEl = document.getElementById("toast");
+const toastTitleEl = document.getElementById("toastTitle");
+const toastMsgEl = document.getElementById("toastMsg");
+let toastTimer = null;
+
+function toast(title, msg){
+  toastTitleEl.textContent = title;
+  toastMsgEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toastEl.classList.remove("show"), 2200);
+}
+
+function renderLog(){
+  const box = document.getElementById("logBox");
+  if(!box) return;
+  box.textContent = state.log.join("\n");
+}
+
+function clearLog(){
+  logEvent("Clear log requested");
+  state.log = [];
+  renderLog();
+}
+
+function exportLog(){
+  const text = state.log.join("\n");
+  navigator.clipboard?.writeText(text);
+  toast("Exported", "Log copied to clipboard (if permitted by your browser).");
+  logEvent("Export log", "Copied to clipboard");
+}
+
+/* =========================================================
+   ACCESS CONTROL (ROLE-BASED GATING)
+   ========================================================= */
+function canAccessPage(page){
+  if(page === "users") return state.user.role === "Admin";
+  return true;
+}
+function canOperate(){
+  return state.user.role !== "Viewer"; // Viewer can navigate, but not operate
+}
+function deny(reason){
+  toast("Access denied", reason);
+  logEvent("Denied", reason, "DENY");
+}
+
+/* =========================================================
+   ROUTING / NAV (ACTIVE LINKS)
+   - Uses state + optional URL hash
+   ========================================================= */
+function setActiveNav(page){
+  ["home","global","table","users","logout"].forEach(p=>{
+    const el = document.getElementById(`nav-${p}`);
+    if(!el) return;
+    el.classList.toggle("active", p===page);
+    // show disabled style if user can't access
+    if(p==="users" && state.user.role!=="Admin"){
+      el.classList.add("disabled");
+    } else {
+      el.classList.remove("disabled");
+    }
   });
 }
 
-/* ===================== THEME TOGGLE ===================== */
-const themeSwitch=document.getElementById('themeSwitch');
-const html=document.documentElement;
+function showPage(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(`page-${page}`).classList.add("active");
+  state.activePage = page;
+  setActiveNav(page);
+}
 
-const savedTheme=localStorage.getItem('theme')||'dark';
-html.setAttribute('data-theme',savedTheme);
-themeSwitch.checked=savedTheme==='light';
+function goPage(page){
+  if(!canAccessPage(page)){
+    deny("Manage WFC Users is Admin-only.");
+    return;
+  }
+  logEvent("Navigate", `page=${page}`);
+  // update hash for “active links”
+  location.hash = `#${page}`;
+  // show
+  showPage(page);
+  // render page-specific views
+  if(page === "table") renderTable();
+  if(page === "global") renderGlobalSummary();
+}
 
-themeSwitch.addEventListener('change',()=>{
-  const theme=themeSwitch.checked?'light':'dark';
-  html.setAttribute('data-theme',theme);
-  localStorage.setItem('theme',theme);
+window.addEventListener("hashchange", ()=>{
+  const page = (location.hash || "#home").replace("#","");
+  if(["home","global","table","users","logout"].includes(page)){
+    goPage(page);
+  }
 });
+
+/* =========================================================
+   GS TABS (HOME)
+   ========================================================= */
+function selectGS(gs, el){
+  document.querySelectorAll(".gsTab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+  state.activeGS = gs;
+  logEvent("Select GS", `gs=${gs}`);
+  renderHome();
+  renderGlobalSummary();
+}
+
+/* =========================================================
+   RING PROTOCOL SELECTION
+   ========================================================= */
+function selectRing(protocol){
+  state.ring.activeProtocol = protocol;
+  ["RING0","RINGQ","RING3"].forEach(p=>{
+    document.getElementById(`ring-${p}`).classList.toggle("active", p===protocol);
+  });
+  logEvent("Select RING protocol", `protocol=${protocol}`);
+  renderHome();
+  renderGlobalSummary();
+}
+
+/* =========================================================
+   ACTIONS (CHANGE GS STATE)
+   ========================================================= */
+function toggleSatellite(){
+  if(!canOperate()) return deny("Viewer role cannot change operational state.");
+  const gs = state.gs[state.activeGS];
+  gs.satVisible = !gs.satVisible;
+  gs.visibleFor = gs.satVisible ? "12m" : "—";
+  logEvent("Toggle satellite visibility", `${state.activeGS} => ${gs.satVisible ? "Visible" : "Not visible"}`);
+  renderHome();
+  renderGlobalSummary();
+}
+
+function connectTo(target){
+  if(!canOperate()) return deny("Viewer role cannot connect/disconnect stations.");
+  const gs = state.gs[state.activeGS];
+
+  if(!gs.satVisible){
+    toast("Blocked", "Satellite not visible — cannot connect.");
+    logEvent("Connect blocked", `activeGS=${state.activeGS}, target=${target}`, "WARN");
+    return;
+  }
+  gs.connections[target] = true;
+  logEvent("Connect", `activeGS=${state.activeGS}, target=${target}`);
+  renderHome();
+  renderGlobalSummary();
+}
+
+function disconnectAll(){
+  if(!canOperate()) return deny("Viewer role cannot connect/disconnect stations.");
+  const gs = state.gs[state.activeGS];
+  Object.keys(gs.connections).forEach(k=>{
+    gs.connections[k] = (k === state.activeGS); // keep “self” true
+  });
+  logEvent("Disconnect all", `activeGS=${state.activeGS}`);
+  renderHome();
+  renderGlobalSummary();
+}
+
+function prepareRing(){
+  if(!canOperate()) return deny("Viewer role cannot prepare RING distribution.");
+  const gs = state.gs[state.activeGS];
+  const protocol = state.ring.activeProtocol;
+
+  if(!gs.satVisible){
+    toast("Blocked", "Satellite not visible — cannot prepare.");
+    logEvent("Prepare blocked", `activeGS=${state.activeGS}, protocol=${protocol}`, "WARN");
+    return;
+  }
+
+  gs.ring[protocol].prepared = true;
+  gs.ring[protocol].delivered = false;
+  logEvent("Prepare RING", `activeGS=${state.activeGS}, protocol=${protocol}`);
+  renderHome();
+  renderGlobalSummary();
+}
+
+function distributeKeys(){
+  if(!canOperate()) return deny("Viewer role cannot distribute keys.");
+  const gs = state.gs[state.activeGS];
+  const protocol = state.ring.activeProtocol;
+
+  if(!gs.satVisible){
+    toast("Blocked", "Satellite not visible — cannot distribute.");
+    logEvent("Distribute blocked", `activeGS=${state.activeGS}, protocol=${protocol}`, "WARN");
+    return;
+  }
+  if(!gs.ring[protocol].prepared){
+    toast("Blocked", "Not prepared yet — click Prepare first.");
+    logEvent("Distribute blocked", `not prepared | activeGS=${state.activeGS}, protocol=${protocol}`, "WARN");
+    return;
+  }
+
+  // Prototype behavior: mark as delivered if at least one connection besides self exists
+  const connCount = Object.entries(gs.connections).filter(([k,v])=>k!==state.activeGS && v).length;
+  if(connCount === 0){
+    toast("Blocked", "No peer GS connected — connect at least one station.");
+    logEvent("Distribute blocked", `no peers connected | activeGS=${state.activeGS}`, "WARN");
+    return;
+  }
+
+  gs.ring[protocol].delivered = true;
+  logEvent("Distribute keys", `activeGS=${state.activeGS}, protocol=${protocol}, peers=${connCount}`);
+  renderHome();
+  renderGlobalSummary();
+}
+
+function exchangeTransfer(){
+  if(!canOperate()) return deny("Viewer role cannot execute secure transfer.");
+  const protocol = state.ring.activeProtocol;
+  logEvent("Exchange secure transfer", `activeGS=${state.activeGS}, protocol=${protocol}`);
+  toast("Action", "Secure transfer simulated (logged).");
+}
+
+function resetRing(){
+  if(!canOperate()) return deny("Viewer role cannot reset protocol state.");
+  const gs = state.gs[state.activeGS];
+  const protocol = state.ring.activeProtocol;
+  gs.ring[protocol].prepared = false;
+  gs.ring[protocol].delivered = false;
+  logEvent("Reset RING state", `activeGS=${state.activeGS}, protocol=${protocol}`);
+  renderHome();
+  renderGlobalSummary();
+}
+
+/* =========================================================
+   RENDERING (HOME, GLOBAL, TABLE)
+   ========================================================= */
+function renderHome(){
+  // Active GS
+  document.getElementById("activeGS").textContent = state.activeGS;
+
+  const gs = state.gs[state.activeGS];
+
+  // Satellite visible
+  document.getElementById("satVisible").textContent = gs.satVisible ? "Yes" : "No";
+  document.getElementById("visibleFor").textContent = gs.visibleFor;
+
+  const satDot = document.getElementById("satDot");
+  satDot.className = "dot " + (gs.satVisible ? "ok" : "off");
+
+  // Connections GS1-4
+  ["GS1","GS2","GS3","GS4"].forEach(k=>{
+    const el = document.getElementById("c"+k);
+    const on = !!gs.connections[k];
+    el.textContent = on ? "Connected" : "Not Connected";
+    el.className = "v " + (on ? "status-ok" : "status-off");
+  });
+
+  // Ring protocol state
+  const protocol = state.ring.activeProtocol;
+  document.getElementById("ringSelected").textContent = protocol;
+
+  const prepared = gs.ring[protocol].prepared;
+  const delivered = gs.ring[protocol].delivered;
+
+  document.getElementById("ringPrepared").textContent = prepared ? "Yes" : "No";
+  document.getElementById("prepDot").className = "dot " + (prepared ? "ok" : "off");
+
+  document.getElementById("ringDelivered").textContent = delivered ? "Yes" : "No";
+  document.getElementById("delivDot").className = "dot " + (delivered ? "ok" : "off");
+}
+
+function renderGlobalSummary(){
+  const gs = state.gs[state.activeGS];
+  const visibleTo = gs.satVisible ? state.activeGS : "None";
+  const connCount = Object.entries(gs.connections).filter(([k,v])=>k!==state.activeGS && v).length;
+
+  const visibleEl = document.getElementById("globalVisibleTo");
+  if(visibleEl) visibleEl.textContent = visibleTo;
+
+  const protEl = document.getElementById("globalProtocol");
+  if(protEl) protEl.textContent = state.ring.activeProtocol;
+
+  const cntEl = document.getElementById("globalConnCount");
+  if(cntEl) cntEl.textContent = String(connCount);
+}
+
+function renderTable(){
+  const mount = document.getElementById("tableMount");
+  if(!mount) return;
+
+  const rows = ["GS1","GS2","GS3","GS4"].map(gsName=>{
+    const g = state.gs[gsName];
+    const vis = g.satVisible ? "Yes" : "No";
+    const status = (gsName === state.activeGS) ? "Active Context" : "—";
+    const peers = Object.entries(g.connections).filter(([k,v])=>k!==gsName && v).map(([k])=>k).join(", ") || "None";
+    return `<tr>
+      <td>${gsName}</td>
+      <td class="${g.satVisible ? "status-ok" : "status-off"}">${vis}</td>
+      <td>${status}</td>
+      <td>${peers}</td>
+      <td>${state.ring.activeProtocol}</td>
+    </tr>`;
+  }).join("");
+
+  mount.innerHTML = `
+    <table>
+      <tr>
+        <th>GS</th>
+        <th>Satellite Visible</th>
+        <th>Context</th>
+        <th>Connected Peers</th>
+        <th>Protocol</th>
+      </tr>
+      ${rows}
+    </table>
+  `;
+}
+
+/* =========================================================
+   THEME TOGGLE (PERSISTED)
+   ========================================================= */
+const themeSwitch = document.getElementById("themeSwitch");
+const html = document.documentElement;
+
+const savedTheme = localStorage.getItem("theme") || "dark";
+html.setAttribute("data-theme", savedTheme);
+themeSwitch.checked = savedTheme === "light";
+
+themeSwitch.addEventListener("change", ()=>{
+  const theme = themeSwitch.checked ? "light" : "dark";
+  html.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+  logEvent("Theme changed", theme);
+});
+
+/* =========================================================
+   ROLE CHANGES (GATING + UI)
+   ========================================================= */
+const roleSelect = document.getElementById("roleSelect");
+roleSelect.addEventListener("change", ()=>{
+  state.user.role = roleSelect.value;
+  logEvent("Role changed", state.user.role);
+  setActiveNav(state.activePage);
+
+  // if user drops from Admin while on Users page, force home
+  if(state.activePage === "users" && state.user.role !== "Admin"){
+    deny("Role no longer Admin — returning to Home.");
+    goPage("home");
+  }
+});
+
+/* =========================================================
+   REVISION BAR
+   ========================================================= */
+const providedStamp = stamp(); // timestamp of THIS revision delivery
+document.getElementById("revProvided").textContent = providedStamp;
+
+function tickClock(){
+  document.getElementById("liveClock").textContent = new Date().toLocaleString();
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+/* =========================================================
+   INIT
+   ========================================================= */
+function init(){
+  // initial nav gating visuals
+  setActiveNav("home");
+
+  // initial render
+  renderHome();
+  renderGlobalSummary();
+  renderTable();
+
+  // initial ring selection visuals
+  selectRing(state.ring.activeProtocol);
+
+  // initial log
+  logEvent("UI loaded", `revision=1, provided=${providedStamp}`);
+  logEvent("Active context", `page=home, gs=${state.activeGS}, role=${state.user.role}`);
+
+  // hash routing
+  const start = (location.hash || "#home").replace("#","");
+  if(["home","global","table","users","logout"].includes(start)){
+    goPage(start);
+  }
+}
+init();
 </script>
 
 </body>
 </html>
-``
