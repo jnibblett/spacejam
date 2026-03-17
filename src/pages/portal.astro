@@ -4,20 +4,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Connect to WFC-maingnd</title>
+
   <style>
     :root{
       --aqua:#37e9ef;
       --panel:#c9f8ff;
+      --title:#5b5bd6;
+      --heading:#6a7fd8;
       --ink:#111;
       --muted:#666;
-      --blue:#1c4fa3;
-      --btn:#a7c4ff;
-      --btnBorder:#3b57a5;
-      --shadow: 0 2px 0 rgba(0,0,0,.25);
       --border: 1px solid rgba(0,0,0,.25);
+      --shadow: 0 2px 0 rgba(0,0,0,.25);
+
+      --btnTop:#cfe0ff;
+      --btnBottom:#a7c4ff;
+      --btnBorder:#3b57a5;
+
+      --teamBar:#1b4c98;
+      --danger:#ff0000;
+      --ok:#1e7a1e;
     }
 
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box; }
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -25,7 +33,6 @@
       color:var(--ink);
     }
 
-    /* top title bar */
     .topbar{
       width:min(980px, 96vw);
       margin:24px auto 18px;
@@ -33,250 +40,55 @@
       border-radius:2px;
       text-align:center;
       padding:10px 12px;
-      box-shadow: var(--shadow);
+      box-shadow:var(--shadow);
     }
     .topbar h1{
       margin:0;
       font-size:22px;
-      font-weight:500;
-      color:#5b5bd6; /* purple-ish like screenshot title */
-      letter-spacing:.2px;
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Connect to WFC-maingnd</title>
+
+  <style>
+    :root{
+      --aqua:#37e9ef;
+      --panel:#c9f8ff;
+      --title:#5b5bd6;
+      --heading:#6a7fd8;
+      --ink:#111;
+      --muted:#666;
+      --border: 1px solid rgba(0,0,0,.25);
+      --shadow: 0 2px 0 rgba(0,0,0,.25);
+
+      --btnTop:#cfe0ff;
+      --btnBottom:#a7c4ff;
+      --btnBorder:#3b57a5;
+
+      --teamBar:#1b4c98;
+      --danger:#ff0000;
+      --ok:#1e7a1e;
     }
 
-    /* layout */
-    .wrap{
-      width:min(1100px, 96vw);
-      margin:0 auto 28px;
-    }
-    .cols{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:40px;
-      align-items:start;
-    }
-    @media (max-width: 900px){
-      .cols{grid-template-columns:1fr; gap:22px;}
-    }
-
-    .colTitle{
-      text-align:center;
-      font-size:24px;
-      font-weight:500;
-      color:#6a7fd8;
-      margin:10px 0 16px;
-    }
-
-    /* panel card */
-    .panel{
-      background:var(--panel);
-      border:var(--border);
-      width:100%;
-      max-width:420px;
-      margin:0 auto;
-      padding:18px 18px 12px;
-      position:relative;
-    }
-
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-    }
-
-    .kicker{
-      font-weight:800;
-      font-size:22px;
-      margin:0 0 10px;
-      text-align:left;
-    }
-
-    .satBlock{
-      display:grid;
-      grid-template-columns: 1fr auto;
-      gap:12px 16px;
-      align-items:center;
-      margin-bottom:10px;
-    }
-    .satLabel{
-      font-size:26px;
-      font-weight:700;
+    *{ box-sizing:border-box; }
+    body{
       margin:0;
-    }
-    .satLabel .none{
-      color:#ff0000;
-      font-weight:800;
-      margin-left:10px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#fff;
+      color:var(--ink);
     }
 
-    .subLabel{
-      font-size:16px;
-      font-weight:600;
-      color:#222;
-    }
-
-    /* progress bar */
-    .progress{
-      width:170px;
-      height:16px;
-      border:var(--border);
-      background:#efefef;
-      position:relative;
-      overflow:hidden;
-      box-shadow: inset 0 1px 0 rgba(0,0,0,.1);
-    }
-    .progress > span{
-      display:block;
-      height:100%;
-      width:55%;
-      background:linear-gradient(#a7f0a7, #4cc54c);
-    }
-
-    /* buttons */
-    .btn{
-      display:inline-block;
-      padding:10px 12px;
-      background:linear-gradient(#cfe0ff, var(--btn));
-      border:2px solid var(--btnBorder);
-      border-radius:3px;
-      color:#000;
-      font-weight:600;
-      cursor:pointer;
-      box-shadow: var(--shadow);
+    .topbar{
+      width:min(980px, 96vw);
+      margin:24px auto 18px;
+      background:var(--aqua);
+      border-radius:2px;
       text-align:center;
-      min-width:170px;
+      padding:10px 12px;
+      box-shadow:var(--shadow);
     }
-    .btn:active{transform:translateY(1px)}
-    .btn.secondary{
-      min-width:160px;
-      padding:8px 12px;
-      font-weight:600;
-    }
-    .btn.disabled,
-    .btn:disabled{
-      background:#e6e6e6;
-      border-color:#999;
-      color:#777;
-      cursor:not-allowed;
-      box-shadow:none;
-    }
-
-    .sectionTitle{
+    .topbar h1{
+      margin:0;
       font-size:22px;
-      font-weight:800;
-      margin:14px 0 8px;
-    }
-
-    .footerLine{
-      margin-top:12px;
-      font-size:24px;
-      font-weight:500;
-    }
-
-    .teamBar{
-      margin:14px -18px 8px;
-      padding:8px 16px;
-      background:#1b4c98;
-      color:#fff;
-      font-weight:700;
-      letter-spacing:.2px;
-    }
-
-    /* small helper for matching the screenshot spacing */
-    .tight{margin-top:6px}
-  </style>
-</head>
-
-<body>
-  <header class="topbar">
-    <h1>Connect to WFC-maingnd</h1>
-  </header>
-
-  <main class="wrap">
-    <section class="cols">
-
-      <!-- LEFT: With Active connection -->
-      <div>
-        <div class="colTitle">With Active connection</div>
-
-        <div class="panel" role="region" aria-label="With active connection panel">
-          <div class="kicker">Satellite visible to</div>
-
-          <div class="satBlock">
-            <div class="satLabel">GS1</div>
-
-            <button class="btn" id="btnRingActive">
-              Connect to GS1<br/>for RING Key<br/>Distribution
-            </button>
-
-            <div class="subLabel">Visible for</div>
-
-            <div class="progress" aria-label="Visible for progress">
-              <span id="visActive"></span>
-            </div>
-          </div>
-
-          <div class="sectionTitle">Ground Connectivity</div>
-          <button class="btn secondary" id="btnConnectGs">Connect to GS</button>
-
-          <div class="footerLine tight">Logged in: <span id="userActive">name@wfc.xyz</span></div>
-        </div>
-      </div>
-
-      <!-- RIGHT: Without any active connection -->
-      <div>
-        <div class="colTitle">Without any active connection</div>
-
-        <div class="panel" role="region" aria-label="Without active connection panel">
-          <div class="kicker">Satellite visible to</div>
-
-          <div class="satBlock">
-            <div class="satLabel"> <span class="none">None</span></div>
-
-            <button class="btn disabled" id="btnRingInactive" disabled>
-              Unable to<br/>connect to a GS<br/>for RING Key<br/>Distribution
-            </button>
-
-            <div class="subLabel">Visible for</div>
-
-            <div class="progress" aria-label="Visible for progress (inactive)">
-              <span id="visInactive" style="width:45%"></span>
-            </div>
-          </div>
-
-          <div class="teamBar">Team: -</div>
-
-          <div class="footerLine">Logged in: <span id="userInactive">name@wfc.xyz</span></div>
-        </div>
-      </div>
-
-    </section>
-  </main>
-
-  <script>
-    // Tiny demo behavior so the UI feels "alive":
-    // - animate the left "Visible for" bar down over time
-    // - click handlers for buttons (replace with real actions)
-    const visActive = document.getElementById('visActive');
-    let pct = 55;
-
-    function render(){
-      visActive.style.width = pct + '%';
-    }
-    render();
-
-    setInterval(() => {
-      pct = Math.max(0, pct - 1);
-      render();
-    }, 1200);
-
-    document.getElementById('btnRingActive').addEventListener('click', () => {
-      alert('Connect to GS1 for RING Key Distribution (placeholder)');
-    });
-
-    document.getElementById('btnConnectGs').addEventListener('click', () => {
-      alert('Connect to GS (placeholder)');
-    });
-  </script>
-</body>
-</html>
