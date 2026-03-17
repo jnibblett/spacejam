@@ -225,3 +225,136 @@
         </div>
 
         <!-- This is ALWAYS the “RING Key” button.
+             Inactive = disabled + “Unable to connect…” (per your request)
+             Active   = enabled + “Connect to GS1…” -->
+        <button class="btn" id="ringBtn" type="button" aria-disabled="true">
+          Unable to<br/>connect to a GS<br/>for RING Key<br/>Distribution
+        </button>
+
+        <div class="subLabel">Visible for</div>
+        <div class="progress" aria-label="Visible for progress">
+          <span id="visBar" style="width:45%"></span>
+        </div>
+      </div>
+
+      <!-- Inactive-only block (matches your original mock concept) -->
+      <div class="teamBar" id="teamBar">
+        <div>Team: <span id="teamName">-</span></div>
+        <div id="sessionHint" class="meta" style="color:#d7e6ff;">
+          Status: Disconnected
+        </div>
+      </div>
+
+      <!-- Active-only block -->
+      <div id="groundBlock" class="hidden">
+        <div class="sectionTitle">Ground Connectivity</div>
+        <button class="btn secondary" id="connectGsBtn" type="button">Connect to GS</button>
+      </div>
+
+      <!-- Buttons row:
+           - Inactive: shows “Connect” (so you can start a session)
+           - Active: shows “Disconnect” -->
+      <div class="actionsRow">
+        <button class="btn secondary" id="connectBtn" type="button">Connect</button>
+        <button class="btn danger hidden" id="disconnectBtn" type="button">Disconnect</button>
+      </div>
+
+      <div class="footerLine">Logged in: <span id="userLabel">name@wfc.xyz</span></div>
+      <div class="meta" id="metaLine">Tip: Click “Connect” to simulate an active session.</div>
+    </div>
+  </main>
+
+  <script>
+    const stateTitle    = document.getElementById('stateTitle');
+    const panel         = document.getElementById('panel');
+    const stationLabel  = document.getElementById('stationLabel');
+    const ringBtn       = document.getElementById('ringBtn');
+
+    const connectBtn    = document.getElementById('connectBtn');
+    const disconnectBtn = document.getElementById('disconnectBtn');
+
+    const groundBlock   = document.getElementById('groundBlock');
+    const connectGsBtn  = document.getElementById('connectGsBtn');
+
+    const teamBar       = document.getElementById('teamBar');
+    const sessionHint   = document.getElementById('sessionHint');
+
+    const visBar        = document.getElementById('visBar');
+    const metaLine      = document.getElementById('metaLine');
+
+    const ACTIVE_STATION = 'GS1';
+
+    function setRingDisabledUnable(){
+      ringBtn.setAttribute('aria-disabled', 'true');
+      ringBtn.innerHTML = 'Unable to<br/>connect to a GS<br/>for RING Key<br/>Distribution';
+    }
+
+    function setRingEnabledConnect(){
+      ringBtn.removeAttribute('aria-disabled');
+      ringBtn.innerHTML = 'Connect to ' + ACTIVE_STATION + '<br/>for RING Key<br/>Distribution';
+    }
+
+    function setInactive(){
+      panel.dataset.state = 'inactive';
+      panel.dataset.visibleStation = 'None';
+
+      stateTitle.textContent = 'Without any active connection';
+      stationLabel.innerHTML = '<span class="none">None</span>';
+
+      setRingDisabledUnable(); // ✅ your requested behavior [1](https://learning.cloud.microsoft/detail/c078d88d-614a-4392-8cce-24918d9490cf?context={%22subEntityId%22:{%22source%22:%22M365Search%22}})
+
+      // Inactive visuals
+      teamBar.classList.remove('hidden');
+      sessionHint.textContent = 'Status: Disconnected';
+
+      groundBlock.classList.add('hidden');
+
+      connectBtn.classList.remove('hidden');
+      disconnectBtn.classList.add('hidden');
+
+      visBar.style.width = '45%';
+      metaLine.textContent = 'Tip: Click “Connect” to simulate an active session.';
+    }
+
+    function setActive(){
+      panel.dataset.state = 'active';
+      panel.dataset.visibleStation = ACTIVE_STATION;
+
+      stateTitle.textContent = 'With Active connection';
+      stationLabel.textContent = ACTIVE_STATION;
+
+      setRingEnabledConnect();
+
+      // Active visuals
+      teamBar.classList.add('hidden');
+      groundBlock.classList.remove('hidden');
+
+      connectBtn.classList.add('hidden');
+      disconnectBtn.classList.remove('hidden');
+
+      visBar.style.width = '60%';
+      metaLine.textContent = 'Active session simulated. Click “Disconnect” to return to inactive.';
+    }
+
+    // Inactive: “Connect” toggles state to active
+    connectBtn.addEventListener('click', setActive);
+
+    // Active: “Disconnect” toggles state back to inactive
+    disconnectBtn.addEventListener('click', setInactive);
+
+    // Active: RING button can trigger the real action later (placeholder now)
+    ringBtn.addEventListener('click', () => {
+      if (panel.dataset.state !== 'active') return;
+      alert('RING Key Distribution action (placeholder).');
+    });
+
+    connectGsBtn.addEventListener('click', () => {
+      alert('Ground station connectivity action (placeholder).');
+    });
+
+    // Initialize
+    setInactive();
+  </script>
+</body>
+</html>
+``
