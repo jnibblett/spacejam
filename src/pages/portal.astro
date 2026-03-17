@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Interface – Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --panel: #0f1a2f;
+      --text: #e7eefc;
+      --muted: #9bb0d3;
+      --border: rgba(255,182,193,.4);
+      --primary:#5b8cff;
+      --ok:#1dd3b0;
+      --warn:#ffcc00;
+      --bad:#ff4d6d;
+
+      --font: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
+
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    /* =========================
+       TABLE-LIKE APP LAYOUT
+       ========================= */
+
+    .app{
+      display:grid;
+      grid-template-columns: 260px 1fr;
+      height:100vh;
+      border:1px solid var(--border);
+    }
+
+    .cell{
+      border-top:1px solid var(--border);
+      border-left:1px solid var(--border);
+      background:rgba(15,26,47,.35);
+    }
+
+    .sidebar{
+      border-left:0;
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+
+    .main{
+      border-top:0;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      min-width:0;
+    }
+
+    header, main, footer{
+      padding:16px;
+    }
+
+    /* =========================
+       SIDEBAR
+       ========================= */
+
+    .brand{
+      font-weight:700;
+      font-size:1.1rem;
+      padding-bottom:12px;
+      border-bottom:1px solid var(--border);
+    }
+
+    nav{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    nav a{
+      text-decoration:none;
+      color:var(--text);
+      padding:8px 10px;
+      border:1px solid var(--border);
+    }
+
+    nav a.active{
+      background:rgba(91,140,255,.15);
+      border-color:rgba(91,140,255,.45);
+    }
+
+    .sidebar-footer{
+      margin-top:auto;
+      font-size:.85rem;
+      color:var(--muted);
+      border-top:1px solid var(--border);
+      padding-top:12px;
+    }
+
+    /* =========================
+       TOPBAR
+       ========================= */
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .search{
+      flex:1;
+    }
+
+    .search input{
+      width:100%;
+      padding:8px 10px;
+      background:transparent;
+      border:1px solid var(--border);
+      color:var(--text);
+    }
+
+    .user{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      font-size:.9rem;
+    }
+
+    .avatar{
+      width:32px;
+      height:32px;
+      display:grid;
+      place-items:center;
+      border:1px solid var(--border);
+      background:rgba(29,211,176,.15);
+      font-weight:700;
+    }
+
+    /* =========================
+       CONTENT
+       ========================= */
+
+    .pagehead{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      margin-bottom:16px;
+    }
+
+    h1{
+      margin:0;
+      font-size:1.3rem;
+    }
+
+    .muted{ color:var(--muted) }
+
+    /* KPI GRID — TABLE STYLE */
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      border:1px solid var(--border);
+      margin-bottom:20px;
+    }
+
+    .kpi{
+      padding:14px;
+      border-right:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+    }
+
+    .kpi:last-child{ border-right:0 }
+
+    .kpi .label{ color:var(--muted); font-size:.85rem }
+    .kpi .value{ font-size:1.4rem; font-weight:700; margin-top:6px }
+
+    /* =========================
+       DATA TABLE
+       ========================= */
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      border:1px solid var(--border);
+    }
+
+    th, td{
+      padding:10px 12px;
+      border-bottom:1px solid var(--border);
+      border-right:1px solid var(--border);
+      text-align:left;
+      font-size:.9rem;
+    }
+
+    th:last-child, td:last-child{ border-right:0 }
+
+    th{
+      color:var(--muted);
+      background:rgba(255,255,255,.03);
+    }
+
+    .pill{
+      padding:3px 8px;
+      border:1px solid var(--border);
+      font-size:.8rem;
+    }
+
+    .ok{ background:rgba(29,211,176,.2) }
+    .warn{ background:rgba(255,204,0,.2) }
+    .bad{ background:rgba(255,77,109,.2) }
+
+    /* =========================
+       FOOTER
+       ========================= */
+
+    footer{
+      border-top:1px solid var(--border);
+      font-size:.85rem;
+      color:var(--muted);
+    }
+
+    /* =========================
+       RESPONSIVE
+       ========================= */
+
+    @media (max-width: 1000px){
+      .kpis{ grid-template-columns:repeat(2,1fr) }
+    }
+
+    @media (max-width: 720px){
+      .app{
+        grid-template-columns:1fr;
+      }
+      .sidebar{
+        display:none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="cell sidebar">
+      <div class="brand">Admin Interface</div>
+      <nav>
+        <a class="active">Dashboard</a>
+        <a href="/connect">Connect</a>
+        <a>Orders</a>
+        <a>Settings</a>
+      </nav>
+      <div class="sidebar-footer">
+        v0.1 · Internal
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="cell main">
+      <!-- TOPBAR -->
+      <header>
+        <div class="search">
+          <input placeholder="Search…" />
+        </div>
+        <div class="user">
+          <div class="avatar">AA</div>
+          <div>Admin</div>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <main>
+        <div class="pagehead">
+          <div>
+            <h1>Dashboard</h1>
+            <div class="muted">System overview</div>
+          </div>
+        </div>
+
+        <!-- KPI TABLE -->
+        <section class="kpis">
+          <div class="kpi">
+            <div class="label">Active Users</div>
+            <div class="value">1,284</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Requests</div>
+            <div class="value">9,410</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Errors</div>
+            <div class="value">12</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Latency</div>
+            <div class="value">182ms</div>
+          </div>
+        </section>
+
+        <!-- ACTIVITY TABLE -->
+        <table>
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Actor</th>
+              <th>Status</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Created user</td>
+              <td>admin@org</td>
+              <td><span class="pill ok">OK</span></td>
+              <td>2m ago</td>
+            </tr>
+            <tr>
+              <td>Updated permissions</td>
+              <td>ops@org</td>
+              <td><span class="pill warn">Review</span></td>
+              <td>18m ago</td>
+            </tr>
+            <tr>
+              <td>Failed login</td>
+              <td>unknown</td>
+              <td><span class="pill bad">Blocked</span></td>
+              <td>1h ago</td>
+            </tr>
+          </tbody>
+        </table>
+      </main>
+
+      <!-- FOOTER -->
+      <footer>
+        © Admin Console
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
