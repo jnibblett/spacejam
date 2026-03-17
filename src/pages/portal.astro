@@ -2,140 +2,391 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Satellite Admin Panel</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ground Station Admin Panel</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      margin: 0;
-      padding: 40px;
+    :root{
+      --bg:#f4f6f8;
+      --card:#ffffff;
+      --text:#1a1a1a;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --blue:#0078d4;
+      --green:#1f7a3f;
+      --red:#a12b2b;
+      --inactive:#9ca3af;
+      --shadow: 0 8px 18px rgba(0,0,0,0.08);
+      --radius: 10px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; padding:32px;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width: 880px; margin: 0 auto;}
+    .header{
+      display:flex; gap:16px; align-items:center; justify-content:space-between;
+      padding:16px 18px; background:var(--card); border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid var(--line);
+    }
+    .header .left{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .title{
+      font-size:16px; font-weight:700;
+      margin:0;
+    }
+    .meta{
+      display:flex; flex-wrap:wrap; gap:12px;
+      font-size:13px; color:var(--muted);
+    }
+    .pill{
+      padding:4px 10px; border:1px solid var(--line);
+      border-radius:999px; background:#fafafa;
+      color:#374151; font-size:12px;
+    }
+    .main{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:18px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
     }
 
-    .admin-container {
-      max-width: 420px;
-      margin: auto;
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 24px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    /* Tabs */
+    .tabs{
+      display:flex; gap:0;
+      border-bottom:1px solid var(--line);
+      background:#fbfbfc;
+    }
+    .tab{
+      flex:1;
+      padding:12px 10px;
+      cursor:pointer;
+      border:none;
+      background:transparent;
+      font-weight:700;
+      color:#374151;
+      border-right:1px solid var(--line);
+    }
+    .tab:last-child{border-right:none}
+    .tab[aria-selected="true"]{
+      background:var(--card);
+      color:#111827;
+      box-shadow: inset 0 -3px 0 var(--blue);
     }
 
-    h1 {
-      margin-top: 0;
-      font-size: 20px;
-      text-align: center;
+    /* Panel layout */
+    .panel{
+      padding:18px;
+      display:none;
+    }
+    .panel.active{display:block;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 760px){
+      .grid{grid-template-columns:1fr;}
     }
 
-    .status-box {
-      margin: 20px 0;
-      padding: 16px;
-      border-radius: 6px;
-      text-align: center;
-      font-weight: bold;
+    .section{
+      border:1px solid var(--line);
+      border-radius: 10px;
+      padding:14px;
+      background:#ffffff;
+    }
+    .section h3{
+      margin:0 0 8px 0;
+      font-size:13px;
+      color:#111827;
+      letter-spacing:0.2px;
+      text-transform:uppercase;
+    }
+    .kv{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:8px 0;
+      border-bottom:1px dashed #eef0f2;
+      font-size:13px;
+    }
+    .kv:last-child{border-bottom:none}
+    .k{color:var(--muted)}
+    .v{font-weight:700}
+
+    .statusBox{
+      margin-top:14px;
+      padding:12px 12px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#fafafa;
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      font-size:13px;
+      color:#374151;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      margin-top:4px;
+      background: var(--inactive);
+      flex: 0 0 auto;
+    }
+    .statusTitle{
+      font-weight:800; margin:0 0 4px 0;
+    }
+    .statusMsg{margin:0; color:var(--muted); line-height:1.35;}
+
+    .actions{
+      margin-top:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      padding:11px 14px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .btn.primary{
+      border-color: var(--blue);
+      color:#fff;
+      background: var(--blue);
+    }
+    .btn.disabled,
+    .btn:disabled{
+      cursor:not-allowed;
+      background:#f3f4f6;
+      color:#9ca3af;
+      border-color:#e5e7eb;
     }
 
-    .connected {
-      background: #e6f6ec;
-      color: #1f7a3f;
-      border: 1px solid #1f7a3f;
-    }
-
-    .disconnected {
-      background: #fdeaea;
-      color: #a12b2b;
-      border: 1px solid #a12b2b;
-    }
-
-    .details {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 14px;
-      color: #555;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .connect-btn {
-      background: #0078d4;
-      color: white;
-    }
-
-    .disconnect-btn {
-      background: #a80000;
-      color: white;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .footer {
-      margin-top: 20px;
-      font-size: 12px;
-      text-align: center;
-      color: #888;
+    .subtle{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:12px;
+      line-height:1.4;
     }
   </style>
 </head>
+
 <body>
+<div class="wrap">
 
-  <div class="admin-container">
-    <h1>Satellite Admin Interface</h1>
-
-    <div id="statusBox" class="status-box disconnected">
-      No Active Connection
+  <!-- Header with "who is logged on" -->
+  <div class="header">
+    <div class="left">
+      <p class="title">Ground Station Admin Interface</p>
+      <div class="meta">
+        <span class="pill" id="loggedIn">Logged in: name@wfc.xyz</span>
+        <span class="pill" id="role">Role: Dev</span>
+        <span class="pill" id="team">Team: Team_123</span>
+      </div>
     </div>
-
-    <div id="details" class="details">
-      Not connected to any Ground Station
-    </div>
-
-    <button id="actionButton" class="connect-btn" onclick="toggleConnection()">
-      Connect to GS1
-    </button>
-
-    <div class="footer">
-      Logged in as: admin@wfc.xyz
-    </div>
+    <span class="pill" id="overallState">State: Inactive</span>
   </div>
 
-  <script>
-    let connected = false;
-    let connectedGS = "GS1";
+  <div class="main">
+    <div class="card">
 
-    function toggleConnection() {
-      connected = !connected;
+      <!-- GS tabs -->
+      <div class="tabs" role="tablist" aria-label="Ground Stations">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="panel-gs1" id="tab-gs1" onclick="selectTab('gs1')">GS1</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-gs2" id="tab-gs2" onclick="selectTab('gs2')">GS2</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-gs3" id="tab-gs3" onclick="selectTab('gs3')">GS3</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="panel-gs4" id="tab-gs4" onclick="selectTab('gs4')">GS4</button>
+      </div>
 
-      const statusBox = document.getElementById("statusBox");
-      const details = document.getElementById("details");
-      const button = document.getElementById("actionButton");
+      <!-- Panels (ALL INACTIVE BY DEFAULT) -->
+      <div class="panel active" id="panel-gs1" role="tabpanel" aria-labelledby="tab-gs1">
+        <h2 style="margin:0 0 12px 0;font-size:16px;">GS1 — Overview</h2>
 
-      if (connected) {
-        statusBox.textContent = "Connected";
-        statusBox.className = "status-box connected";
+        <div class="grid">
+          <div class="section">
+            <h3>Satellite Connectivity</h3>
+            <div class="kv"><div class="k">Satellite Visible</div><div class="v" id="gs1-satVisible">No</div></div>
+            <div class="kv"><div class="k">Visible For</div><div class="v" id="gs1-visibleFor">—</div></div>
 
-        details.textContent = "Connected to " + connectedGS;
+            <div class="statusBox">
+              <div class="dot"></div>
+              <div>
+                <div class="statusTitle">Unable to Prepare RING Key Distribution</div>
+                <p class="statusMsg">Satellite is not visible. This station starts in an inactive state.</p>
+              </div>
+            </div>
+          </div>
 
-        button.textContent = "Disconnect";
-        button.className = "disconnect-btn";
-      } else {
-        statusBox.textContent = "No Active Connection";
-        statusBox.className = "status-box disconnected";
+          <div class="section">
+            <h3>Ground Connectivity</h3>
+            <div class="kv"><div class="k">Connection</div><div class="v" id="gs1-conn">No Active Connection</div></div>
+            <div class="kv"><div class="k">Team</div><div class="v" id="gs1-team">—</div></div>
 
-        details.textContent = "Not connected to any Ground Station";
+            <div class="actions">
+              <!-- Inactive start: disabled primary -->
+              <button class="btn primary disabled" id="gs1-primary" disabled>
+                Unable to connect to a GS for RING Key Distribution
+              </button>
+            </div>
 
-        button.textContent = "Connect to " + connectedGS;
-        button.className = "connect-btn";
-      }
+            <div class="subtle">
+              This reflects the “inactive / unable” starting state shown across the mockups
+              (e.g., “Unable to connect…” and “Unable to Prepare…”). [1](https://myoffice.accenture.com/personal/jeneene_nibblett_accenture_com/Documents/Microsoft%20Copilot%20Chat%20Files/Visio-CARET-A1-Dgms-3e.pdf)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-gs2" role="tabpanel" aria-labelledby="tab-gs2">
+        <h2 style="margin:0 0 12px 0;font-size:16px;">GS2 — Overview</h2>
+        <div class="grid">
+          <div class="section">
+            <h3>Satellite Connectivity</h3>
+            <div class="kv"><div class="k">Satellite Visible</div><div class="v" id="gs2-satVisible">No</div></div>
+            <div class="kv"><div class="k">Visible For</div><div class="v" id="gs2-visibleFor">—</div></div>
+            <div class="statusBox">
+              <div class="dot"></div>
+              <div>
+                <div class="statusTitle">Inactive</div>
+                <p class="statusMsg">Satellite not visible / not ready for key distribution.</p>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Ground Connectivity</h3>
+            <div class="kv"><div class="k">Connection</div><div class="v" id="gs2-conn">No Active Connection</div></div>
+            <div class="kv"><div class="k">Team</div><div class="v" id="gs2-team">—</div></div>
+            <div class="actions">
+              <button class="btn primary disabled" id="gs2-primary" disabled>
+                Unable to connect to a GS for RING Key Distribution
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-gs3" role="tabpanel" aria-labelledby="tab-gs3">
+        <h2 style="margin:0 0 12px 0;font-size:16px;">GS3 — Overview</h2>
+        <div class="grid">
+          <div class="section">
+            <h3>Satellite Connectivity</h3>
+            <div class="kv"><div class="k">Satellite Visible</div><div class="v" id="gs3-satVisible">No</div></div>
+            <div class="kv"><div class="k">Visible For</div><div class="v" id="gs3-visibleFor">—</div></div>
+            <div class="statusBox">
+              <div class="dot"></div>
+              <div>
+                <div class="statusTitle">Inactive</div>
+                <p class="statusMsg">Not ready for “Prepare for RING Key Distribution”. [1](https://myoffice.accenture.com/personal/jeneene_nibblett_accenture_com/Documents/Microsoft%20Copilot%20Chat%20Files/Visio-CARET-A1-Dgms-3e.pdf)</p>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Ground Connectivity</h3>
+            <div class="kv"><div class="k">Connection</div><div class="v" id="gs3-conn">No Active Connection</div></div>
+            <div class="kv"><div class="k">Team</div><div class="v" id="gs3-team">—</div></div>
+            <div class="actions">
+              <button class="btn primary disabled" id="gs3-primary" disabled>
+                Unable to connect to a GS for RING Key Distribution
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-gs4" role="tabpanel" aria-labelledby="tab-gs4">
+        <h2 style="margin:0 0 12px 0;font-size:16px;">GS4 — Overview</h2>
+        <div class="grid">
+          <div class="section">
+            <h3>Satellite Connectivity</h3>
+            <div class="kv"><div class="k">Satellite Visible</div><div class="v" id="gs4-satVisible">No</div></div>
+            <div class="kv"><div class="k">Visible For</div><div class="v" id="gs4-visibleFor">—</div></div>
+            <div class="statusBox">
+              <div class="dot"></div>
+              <div>
+                <div class="statusTitle">Inactive</div>
+                <p class="statusMsg">Satellite not visible; connection actions disabled.</p>
+              </div>
+            </div>
+          </div>
+          <div class="section">
+            <h3>Ground Connectivity</h3>
+            <div class="kv"><div class="k">Connection</div><div class="v" id="gs4-conn">No Active Connection</div></div>
+            <div class="kv"><div class="k">Team</div><div class="v" id="gs4-team">—</div></div>
+            <div class="actions">
+              <button class="btn primary disabled" id="gs4-primary" disabled>
+                Unable to connect to a GS for RING Key Distribution
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /card -->
+  </div><!-- /main -->
+</div><!-- /wrap -->
+
+<script>
+  // Initial state: ALL INACTIVE by default
+  const state = {
+    loggedIn: "name@wfc.xyz",
+    role: "Dev",
+    team: "Team_123",
+    gs: {
+      gs1: { satelliteVisible: false, visibleFor: "—", connected: false, team: "—" },
+      gs2: { satelliteVisible: false, visibleFor: "—", connected: false, team: "—" },
+      gs3: { satelliteVisible: false, visibleFor: "—", connected: false, team: "—" },
+      gs4: { satelliteVisible: false, visibleFor: "—", connected: false, team: "—" }
     }
-  </script>
+  };
+
+  function renderHeader(){
+    document.getElementById("loggedIn").textContent = "Logged in: " + state.loggedIn;
+    document.getElementById("role").textContent = "Role: " + state.role;
+    document.getElementById("team").textContent = "Team: " + state.team;
+    document.getElementById("overallState").textContent = "State: Inactive";
+  }
+
+  function renderGS(gsKey){
+    const gs = state.gs[gsKey];
+    document.getElementById(gsKey + "-satVisible").textContent = gs.satelliteVisible ? "Yes" : "No";
+    document.getElementById(gsKey + "-visibleFor").textContent = gs.visibleFor;
+    document.getElementById(gsKey + "-conn").textContent = gs.connected ? "Connected" : "No Active Connection";
+    document.getElementById(gsKey + "-team").textContent = gs.team;
+    // Primary buttons remain disabled initially as requested
+  }
+
+  function renderAll(){
+    renderHeader();
+    Object.keys(state.gs).forEach(renderGS);
+  }
+
+  function selectTab(gsKey){
+    // Update tab aria-selected
+    ["gs1","gs2","gs3","gs4"].forEach(k=>{
+      const tab = document.getElementById("tab-" + k);
+      const panel = document.getElementById("panel-" + k);
+      const selected = (k === gsKey);
+      tab.setAttribute("aria-selected", selected ? "true" : "false");
+      panel.classList.toggle("active", selected);
+    });
+  }
+
+  // Boot
+  renderAll();
+</script>
 
 </body>
 </html>
