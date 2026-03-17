@@ -1,360 +1,142 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Connect to WFC-maingnd</title>
-
+  <meta charset="UTF-8" />
+  <title>Satellite Admin Panel</title>
   <style>
-    :root{
-      --aqua:#37e9ef;
-      --panel:#c9f8ff;
-      --title:#5b5bd6;
-      --heading:#6a7fd8;
-      --ink:#111;
-      --muted:#666;
-      --border: 1px solid rgba(0,0,0,.25);
-      --shadow: 0 2px 0 rgba(0,0,0,.25);
-
-      --btnTop:#cfe0ff;
-      --btnBottom:#a7c4ff;
-      --btnBorder:#3b57a5;
-
-      --teamBar:#1b4c98;
-      --danger:#ff0000;
-      --ok:#1e7a1e;
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 40px;
     }
 
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:#fff;
-      color:var(--ink);
+    .admin-container {
+      max-width: 420px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    .topbar{
-      width:min(980px, 96vw);
-      margin:24px auto 18px;
-      background:var(--aqua);
-      border-radius:2px;
-      text-align:center;
-      padding:10px 12px;
-      box-shadow:var(--shadow);
-    }
-    .topbar h1{
-      margin:0;
-      font-size:22px;
-      font-weight:500;
-      color:var(--title);
-      letter-spacing:.2px;
+    h1 {
+      margin-top: 0;
+      font-size: 20px;
+      text-align: center;
     }
 
-    .wrap{
-      width:min(900px, 96vw);
-      margin:0 auto 28px;
+    .status-box {
+      margin: 20px 0;
+      padding: 16px;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
     }
 
-    .stateTitle{
-      text-align:center;
-      font-size:24px;
-      font-weight:500;
-      color:var(--heading);
-      margin:10px 0 16px;
+    .connected {
+      background: #e6f6ec;
+      color: #1f7a3f;
+      border: 1px solid #1f7a3f;
     }
 
-    .panel{
-      background:var(--panel);
-      border:var(--border);
-      width:100%;
-      max-width:520px;
-      margin:0 auto;
-      padding:18px 18px 12px;
+    .disconnected {
+      background: #fdeaea;
+      color: #a12b2b;
+      border: 1px solid #a12b2b;
     }
 
-    .kicker{
-      font-weight:800;
-      font-size:22px;
-      margin:0 0 10px;
+    .details {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #555;
     }
 
-    .satBlock{
-      display:grid;
-      grid-template-columns: 1fr auto;
-      gap:12px 16px;
-      align-items:center;
-      margin-bottom:10px;
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
     }
 
-    .satLabel{
-      font-size:26px;
-      font-weight:700;
-      margin:0;
-      line-height:1.1;
-    }
-    .satLabel .none{
-      color:var(--danger);
-      font-weight:800;
-    }
-    .satLabel .ok{
-      color:var(--ok);
-      font-weight:800;
+    .connect-btn {
+      background: #0078d4;
+      color: white;
     }
 
-    .subLabel{
-      font-size:16px;
-      font-weight:600;
-      color:#222;
+    .disconnect-btn {
+      background: #a80000;
+      color: white;
     }
 
-    .progress{
-      width:200px;
-      height:16px;
-      border:var(--border);
-      background:#efefef;
-      position:relative;
-      overflow:hidden;
-      box-shadow: inset 0 1px 0 rgba(0,0,0,.1);
-    }
-    .progress > span{
-      display:block;
-      height:100%;
-      width:40%;
-      background:linear-gradient(#a7f0a7, #4cc54c);
-      transition: width .35s ease;
+    button:hover {
+      opacity: 0.9;
     }
 
-    .btn{
-      display:inline-block;
-      padding:10px 12px;
-      background:linear-gradient(var(--btnTop), var(--btnBottom));
-      border:2px solid var(--btnBorder);
-      border-radius:3px;
-      color:#000;
-      font-weight:600;
-      cursor:pointer;
-      box-shadow: var(--shadow);
-      text-align:center;
-      min-width:200px;
-      user-select:none;
-      text-decoration:none;
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      text-align: center;
+      color: #888;
     }
-    .btn.secondary{
-      min-width:160px;
-      padding:8px 12px;
-    }
-    .btn.danger{
-      background:linear-gradient(#ffd6d6, #ffaaaa);
-      border-color:#a53b3b;
-    }
-    .btn:active{ transform:translateY(1px); }
-
-    /* “disabled” look for inactive RING button */
-    .btn[aria-disabled="true"]{
-      background:#e6e6e6;
-      border-color:#999;
-      color:#777;
-      cursor:not-allowed;
-      box-shadow:none;
-      transform:none;
-      pointer-events:none;
-    }
-
-    .sectionTitle{
-      font-size:22px;
-      font-weight:800;
-      margin:14px 0 8px;
-    }
-
-    .teamBar{
-      margin:14px -18px 8px;
-      padding:8px 16px;
-      background:var(--teamBar);
-      color:#fff;
-      font-weight:700;
-      letter-spacing:.2px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .footerLine{
-      margin-top:12px;
-      font-size:22px;
-      font-weight:500;
-    }
-
-    .meta{
-      font-size:13px;
-      color:var(--muted);
-      margin-top:8px;
-    }
-
-    .actionsRow{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:10px;
-    }
-
-    .hidden{ display:none !important; }
   </style>
 </head>
-
 <body>
-  <header class="topbar">
-    <h1>Connect to WFC-maingnd</h1>
-  </header>
 
-  <main class="wrap">
-    <div class="stateTitle" id="stateTitle">Without any active connection</div>
+  <div class="admin-container">
+    <h1>Satellite Admin Interface</h1>
 
-    <div class="panel" id="panel"
-         data-state="inactive"
-         data-user="name@wfc.xyz"
-         data-team="-"
-         data-visible-station="None">
-
-      <div class="kicker">Satellite visible to</div>
-
-      <div class="satBlock">
-        <div class="satLabel" id="stationLabel">
-          <span class="none">None</span>
-        </div>
-
-        <!-- This is ALWAYS the “RING Key” button.
-             Inactive = disabled + “Unable to connect…” (per your request)
-             Active   = enabled + “Connect to GS1…” -->
-        <button class="btn" id="ringBtn" type="button" aria-disabled="true">
-          Unable to<br/>connect to a GS<br/>for RING Key<br/>Distribution
-        </button>
-
-        <div class="subLabel">Visible for</div>
-        <div class="progress" aria-label="Visible for progress">
-          <span id="visBar" style="width:45%"></span>
-        </div>
-      </div>
-
-      <!-- Inactive-only block (matches your original mock concept) -->
-      <div class="teamBar" id="teamBar">
-        <div>Team: <span id="teamName">-</span></div>
-        <div id="sessionHint" class="meta" style="color:#d7e6ff;">
-          Status: Disconnected
-        </div>
-      </div>
-
-      <!-- Active-only block -->
-      <div id="groundBlock" class="hidden">
-        <div class="sectionTitle">Ground Connectivity</div>
-        <button class="btn secondary" id="connectGsBtn" type="button">Connect to GS</button>
-      </div>
-
-      <!-- Buttons row:
-           - Inactive: shows “Connect” (so you can start a session)
-           - Active: shows “Disconnect” -->
-      <div class="actionsRow">
-        <button class="btn secondary" id="connectBtn" type="button">Connect</button>
-        <button class="btn danger hidden" id="disconnectBtn" type="button">Disconnect</button>
-      </div>
-
-      <div class="footerLine">Logged in: <span id="userLabel">name@wfc.xyz</span></div>
-      <div class="meta" id="metaLine">Tip: Click “Connect” to simulate an active session.</div>
+    <div id="statusBox" class="status-box disconnected">
+      No Active Connection
     </div>
-  </main>
+
+    <div id="details" class="details">
+      Not connected to any Ground Station
+    </div>
+
+    <button id="actionButton" class="connect-btn" onclick="toggleConnection()">
+      Connect to GS1
+    </button>
+
+    <div class="footer">
+      Logged in as: admin@wfc.xyz
+    </div>
+  </div>
 
   <script>
-    const stateTitle    = document.getElementById('stateTitle');
-    const panel         = document.getElementById('panel');
-    const stationLabel  = document.getElementById('stationLabel');
-    const ringBtn       = document.getElementById('ringBtn');
+    let connected = false;
+    let connectedGS = "GS1";
 
-    const connectBtn    = document.getElementById('connectBtn');
-    const disconnectBtn = document.getElementById('disconnectBtn');
+    function toggleConnection() {
+      connected = !connected;
 
-    const groundBlock   = document.getElementById('groundBlock');
-    const connectGsBtn  = document.getElementById('connectGsBtn');
+      const statusBox = document.getElementById("statusBox");
+      const details = document.getElementById("details");
+      const button = document.getElementById("actionButton");
 
-    const teamBar       = document.getElementById('teamBar');
-    const sessionHint   = document.getElementById('sessionHint');
+      if (connected) {
+        statusBox.textContent = "Connected";
+        statusBox.className = "status-box connected";
 
-    const visBar        = document.getElementById('visBar');
-    const metaLine      = document.getElementById('metaLine');
+        details.textContent = "Connected to " + connectedGS;
 
-    const ACTIVE_STATION = 'GS1';
+        button.textContent = "Disconnect";
+        button.className = "disconnect-btn";
+      } else {
+        statusBox.textContent = "No Active Connection";
+        statusBox.className = "status-box disconnected";
 
-    function setRingDisabledUnable(){
-      ringBtn.setAttribute('aria-disabled', 'true');
-      ringBtn.innerHTML = 'Unable to<br/>connect to a GS<br/>for RING Key<br/>Distribution';
+        details.textContent = "Not connected to any Ground Station";
+
+        button.textContent = "Connect to " + connectedGS;
+        button.className = "connect-btn";
+      }
     }
-
-    function setRingEnabledConnect(){
-      ringBtn.removeAttribute('aria-disabled');
-      ringBtn.innerHTML = 'Connect to ' + ACTIVE_STATION + '<br/>for RING Key<br/>Distribution';
-    }
-
-    function setInactive(){
-      panel.dataset.state = 'inactive';
-      panel.dataset.visibleStation = 'None';
-
-      stateTitle.textContent = 'Without any active connection';
-      stationLabel.innerHTML = '<span class="none">None</span>';
-
-      setRingDisabledUnable(); // ✅ your requested behavior [1](https://learning.cloud.microsoft/detail/c078d88d-614a-4392-8cce-24918d9490cf?context={%22subEntityId%22:{%22source%22:%22M365Search%22}})
-
-      // Inactive visuals
-      teamBar.classList.remove('hidden');
-      sessionHint.textContent = 'Status: Disconnected';
-
-      groundBlock.classList.add('hidden');
-
-      connectBtn.classList.remove('hidden');
-      disconnectBtn.classList.add('hidden');
-
-      visBar.style.width = '45%';
-      metaLine.textContent = 'Tip: Click “Connect” to simulate an active session.';
-    }
-
-    function setActive(){
-      panel.dataset.state = 'active';
-      panel.dataset.visibleStation = ACTIVE_STATION;
-
-      stateTitle.textContent = 'With Active connection';
-      stationLabel.textContent = ACTIVE_STATION;
-
-      setRingEnabledConnect();
-
-      // Active visuals
-      teamBar.classList.add('hidden');
-      groundBlock.classList.remove('hidden');
-
-      connectBtn.classList.add('hidden');
-      disconnectBtn.classList.remove('hidden');
-
-      visBar.style.width = '60%';
-      metaLine.textContent = 'Active session simulated. Click “Disconnect” to return to inactive.';
-    }
-
-    // Inactive: “Connect” toggles state to active
-    connectBtn.addEventListener('click', setActive);
-
-    // Active: “Disconnect” toggles state back to inactive
-    disconnectBtn.addEventListener('click', setInactive);
-
-    // Active: RING button can trigger the real action later (placeholder now)
-    ringBtn.addEventListener('click', () => {
-      if (panel.dataset.state !== 'active') return;
-      alert('RING Key Distribution action (placeholder).');
-    });
-
-    connectGsBtn.addEventListener('click', () => {
-      alert('Ground station connectivity action (placeholder).');
-    });
-
-    // Initialize
-    setInactive();
   </script>
+
 </body>
 </html>
 ``
