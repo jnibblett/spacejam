@@ -6,9 +6,7 @@
 <title>WFC Ground Station Admin</title>
 
 <style>
-/* =========================================================
-   THEME VARIABLES
-   ========================================================= */
+/* ===================== THEME ===================== */
 :root{
   --bg:#0b0f14;
   --card:#121826;
@@ -22,31 +20,10 @@
   --inactive:#4b5563;
   --radius:12px;
 }
-
-html[data-theme="light"]{
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --card-2:#f9fafb;
-  --text:#111827;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --blue:#2563eb;
-  --green:#16a34a;
-  --red:#dc2626;
-  --inactive:#9ca3af;
-}
-
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:"Segoe UI", Arial, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+body{margin:0;font-family:Segoe UI,Arial;background:var(--bg);color:var(--text)}
 
-/* =========================================================
-   PRIMARY NAVIGATION (RED BAR)
-   ========================================================= */
+/* ===================== PRIMARY NAV ===================== */
 .primaryNav{
   background:var(--red);
   display:flex;
@@ -61,32 +38,20 @@ body{
   cursor:pointer;
   opacity:.85;
 }
-.primaryTab.active{
-  background:rgba(255,255,255,.25);
-  opacity:1;
-}
+.primaryTab.active{background:rgba(255,255,255,.25);opacity:1}
 
-/* =========================================================
-   PAGE LAYOUT
-   ========================================================= */
-.page{
-  display:none;
-  padding:24px;
-}
+/* ===================== PAGE ===================== */
+.page{display:none;padding:24px}
 .page.active{display:block}
 .wrap{max-width:1100px;margin:auto}
 
-/* =========================================================
-   USER CONTEXT HEADER
-   ========================================================= */
+/* ===================== HEADER ===================== */
 .header{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:var(--radius);
-  padding:16px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  padding:16px;
+  margin-bottom:16px;
 }
 .meta{display:flex;gap:10px;flex-wrap:wrap}
 .pill{
@@ -98,102 +63,66 @@ body{
   color:var(--muted);
 }
 
-/* =========================================================
-   SECONDARY NAVIGATION (GS TABS)
-   ========================================================= */
+/* ===================== SECONDARY NAV ===================== */
 .secondaryNav{
-  margin-top:18px;
-  border-bottom:1px solid var(--line);
   display:flex;
+  border-bottom:1px solid var(--line);
+  margin-bottom:16px;
 }
 .gsTab{
   flex:1;
-  padding:12px;
   text-align:center;
+  padding:12px;
   font-weight:800;
   cursor:pointer;
   color:var(--muted);
 }
-.gsTab.active{
-  color:var(--text);
-  box-shadow:inset 0 -3px 0 var(--blue);
-}
+.gsTab.active{color:var(--text);box-shadow:inset 0 -3px 0 var(--blue)}
 
-/* =========================================================
-   CONTENT CARDS
-   ========================================================= */
+/* ===================== CONTENT ===================== */
 .card{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:var(--radius);
   padding:18px;
-  margin-top:18px;
 }
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .section{
   background:var(--card-2);
   border:1px solid var(--line);
   border-radius:10px;
   padding:14px;
 }
-.section h4{
-  margin:0 0 10px;
-  font-size:12px;
-  text-transform:uppercase;
-  color:var(--muted);
-}
-.kv{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px dashed var(--line);
-}
+.section h4{margin:0 0 10px;font-size:12px;text-transform:uppercase;color:var(--muted)}
+.kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line)}
 .kv:last-child{border-bottom:none}
 .k{color:var(--muted)}
 .v{font-weight:800}
 
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-.actions{margin-top:12px;display:flex;gap:10px}
-.btn{
-  padding:10px 14px;
-  border-radius:10px;
-  border:1px solid var(--line);
-  background:var(--card);
-  color:var(--text);
-  font-weight:900;
-  cursor:pointer;
-}
-.btn.primary{background:var(--blue);color:#fff}
-.btn.inactive{color:var(--inactive)}
+/* ===================== TABLE ===================== */
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--muted);font-size:12px;text-transform:uppercase}
+.status-ok{color:var(--green)}
+.status-off{color:var(--inactive)}
 </style>
 </head>
 
 <body>
 
-<!-- ======================================================
-     PRIMARY NAVIGATION (RED BAR)
-     ====================================================== -->
+<!-- PRIMARY NAV -->
 <div class="primaryNav">
-  <div class="primaryTab active" onclick="selectPrimary('home')">Home</div>
-  <div class="primaryTab" onclick="selectPrimary('global')">Global View</div>
-  <div class="primaryTab" onclick="selectPrimary('table')">Table View</div>
-  <div class="primaryTab" onclick="selectPrimary('users')">Manage WFC Users</div>
-  <div class="primaryTab" onclick="selectPrimary('logout')">Logout</div>
+  <div class="primaryTab active" onclick="switchPage('home',this)">Home</div>
+  <div class="primaryTab" onclick="switchPage('global',this)">Global View</div>
+  <div class="primaryTab" onclick="switchPage('table',this)">Table View</div>
+  <div class="primaryTab" onclick="switchPage('users',this)">Manage WFC Users</div>
+  <div class="primaryTab" onclick="switchPage('logout',this)">Logout</div>
 </div>
 
-<!-- ======================================================
-     PAGE: HOME
-     ====================================================== -->
+<!-- HOME PAGE -->
 <div id="home" class="page active">
   <div class="wrap">
 
-    <!-- USER CONTEXT HEADER -->
     <div class="header">
       <div class="meta">
         <span class="pill">Logged in: name@wfc.xyz</span>
@@ -202,33 +131,30 @@ body{
       </div>
     </div>
 
-    <!-- SECONDARY NAVIGATION (GS CONTEXT) -->
+    <!-- GS TABS -->
     <div class="secondaryNav">
-      <div class="gsTab active" onclick="selectGS(this)">GS1</div>
-      <div class="gsTab" onclick="selectGS(this)">GS2</div>
-      <div class="gsTab" onclick="selectGS(this)">GS3</div>
-      <div class="gsTab" onclick="selectGS(this)">GS4</div>
+      <div class="gsTab active" onclick="selectGS('GS1',this)">GS1</div>
+      <div class="gsTab" onclick="selectGS('GS2',this)">GS2</div>
+      <div class="gsTab" onclick="selectGS('GS3',this)">GS3</div>
+      <div class="gsTab" onclick="selectGS('GS4',this)">GS4</div>
     </div>
 
     <!-- GS PANEL -->
     <div class="card">
       <div class="grid">
 
-        <!-- SATELLITE CONNECTIVITY -->
         <div class="section">
           <h4>Satellite Connectivity</h4>
-          <div class="kv"><span class="k">Satellite Visible</span><span class="v">No</span></div>
-          <div class="kv"><span class="k">Status</span><span class="v">Inactive</span></div>
+          <div class="kv"><span class="k">Active GS</span><span id="activeGS" class="v">GS1</span></div>
+          <div class="kv"><span class="k">Satellite Visible</span><span id="satVisible" class="v status-off">No</span></div>
         </div>
 
-        <!-- GROUND CONNECTIVITY -->
         <div class="section">
-          <h4>Ground Connectivity</h4>
-          <div class="kv"><span class="k">Connection</span><span class="v">None</span></div>
-          <div class="actions">
-            <button class="btn primary inactive">Connect to GS</button>
-            <button class="btn inactive">Distribute Keys</button>
-          </div>
+          <h4>Ground Station Connectivity</h4>
+          <div class="kv"><span class="k">GS1</span><span id="cGS1" class="v status-ok">Connected</span></div>
+          <div class="kv"><span class="k">GS2</span><span id="cGS2" class="v status-off">Not Connected</span></div>
+          <div class="kv"><span class="k">GS3</span><span id="cGS3" class="v status-off">Not Connected</span></div>
+          <div class="kv"><span class="k">GS4</span><span id="cGS4" class="v status-off">Not Connected</span></div>
         </div>
 
       </div>
@@ -237,39 +163,37 @@ body{
   </div>
 </div>
 
-<!-- ======================================================
-     PAGE: GLOBAL VIEW
-     ====================================================== -->
+<!-- GLOBAL VIEW -->
 <div id="global" class="page">
   <div class="wrap card">
     <h2>Global View</h2>
-    <p>System-wide visibility across all GS and satellites.</p>
+    <p>Fleet-wide satellite and GS state.</p>
   </div>
 </div>
 
-<!-- ======================================================
-     PAGE: TABLE VIEW
-     ====================================================== -->
+<!-- TABLE VIEW -->
 <div id="table" class="page">
   <div class="wrap card">
     <h2>Table View</h2>
-    <p>Tabular representation of GS and satellite state.</p>
+    <table>
+      <tr><th>Ground Station</th><th>Satellite Visible</th><th>Status</th></tr>
+      <tr><td>GS1</td><td>Yes</td><td class="status-ok">Connected</td></tr>
+      <tr><td>GS2</td><td>No</td><td class="status-off">Idle</td></tr>
+      <tr><td>GS3</td><td>No</td><td class="status-off">Idle</td></tr>
+      <tr><td>GS4</td><td>No</td><td class="status-off">Idle</td></tr>
+    </table>
   </div>
 </div>
 
-<!-- ======================================================
-     PAGE: MANAGE USERS
-     ====================================================== -->
+<!-- USERS -->
 <div id="users" class="page">
   <div class="wrap card">
     <h2>Manage WFC Users</h2>
-    <p>User accounts, roles, and permissions.</p>
+    <p>User, role, and access management.</p>
   </div>
 </div>
 
-<!-- ======================================================
-     PAGE: LOGOUT
-     ====================================================== -->
+<!-- LOGOUT -->
 <div id="logout" class="page">
   <div class="wrap card">
     <h2>Logout</h2>
@@ -278,26 +202,38 @@ body{
 </div>
 
 <script>
-/* =========================================================
-   PRIMARY NAVIGATION LOGIC
-   ========================================================= */
-function selectPrimary(page){
+/* ===================== PAGE SWITCH ===================== */
+function switchPage(page,el){
   document.querySelectorAll('.primaryTab').forEach(t=>t.classList.remove('active'));
-  event.target.classList.add('active');
-
+  el.classList.add('active');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(page).classList.add('active');
 }
 
-/* =========================================================
-   SECONDARY (GS) NAVIGATION LOGIC
-   ========================================================= */
-function selectGS(el){
+/* ===================== GS STATE ===================== */
+const gsStates = {
+  GS1:{visible:true,connections:{GS1:true,GS2:false,GS3:false,GS4:false}},
+  GS2:{visible:false,connections:{GS1:true,GS2:true,GS3:false,GS4:false}},
+  GS3:{visible:false,connections:{GS1:true,GS2:true,GS3:true,GS4:false}},
+  GS4:{visible:false,connections:{GS1:false,GS2:false,GS3:false,GS4:true}}
+};
+
+function selectGS(gs,el){
   document.querySelectorAll('.gsTab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
+
+  const s = gsStates[gs];
+  document.getElementById('activeGS').textContent = gs;
+  document.getElementById('satVisible').textContent = s.visible ? 'Yes' : 'No';
+  document.getElementById('satVisible').className = 'v ' + (s.visible ? 'status-ok':'status-off');
+
+  ['GS1','GS2','GS3','GS4'].forEach(g=>{
+    const el = document.getElementById('c'+g);
+    el.textContent = s.connections[g] ? 'Connected':'Not Connected';
+    el.className = 'v ' + (s.connections[g] ? 'status-ok':'status-off');
+  });
 }
 </script>
 
 </body>
 </html>
-``
